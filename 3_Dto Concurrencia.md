@@ -197,3 +197,6 @@ Cuando un Singleton contiene propiedades mutables, puede generar problemas en ap
 Solucion Usar actores como comentamos antes
 En Swift moderno, puedes reemplazar el Singleton tradicional con un actor para manejar la concurrencia automáticamente.
 
+
+### Actores globales (`@Globalactor`) --> POR AQUI ME QUEDE ENE EL GENERAL
+
