@@ -174,4 +174,26 @@ SWIFT TE NOTIFICA DE `data race`: `no que lo vaya a hacer, que en dichas condici
 
 * `@MainActor` lo estamos "atando" al `main thread` Si marcamos una clase, struct, enumeración, método o propiedad como `@MainActor` lo estamos "atando" al `main thread` por lo que dicho método, propiedad o instancia que sea, solo será accesible en el hilo principal o instancia que sea, solo será accesible en el hilo principal y nada más y como hemos dicho este es hilo es secuencial y nos quita el problema de `los data race`.
 
+Lo que no podemos olvidar es que no podemos poner `tareas lentas o pesadas` sobre el hilo principal porque estamos `parando la interfaz de la aplicación`.
+Cualquier `proceso que sea lento` siempre debe de estar en un `contexto secundario (task)` para poder hacerlo bien.
+
+Los actores (estado mutable compartido)
+    1. Los actores son clases preparadas para asincronía.
+    2. Sus propiedades evitan el data race bloqueando el acceso a cualquier propiedad, por lo que obligan al uso de sus instancias dentro de un contexto Task o cuando atamos un método o clase a un actor global.
+    3. En la propia definición del actor, la protección a la concurrencia es implícita y no hay que programarla, no hace falta poner async-await, ni nada.
+    4. Todos las propiedades mutables y los métodos que acceden a las mismas están protegidos por defecto con aislamiento y protección de su contexto de forma automática.
+    5. Pero cuando creamos una instancia de un actor, el acceso a cualquier propiedad mutable o método que acceda a estas se vuelve de acceso asíncrono, siempre en un Task.
+    6. Así evita que cuando dos procesos intenten leer a la vez un dato, puedan conseguirlo porque uno de ellos siempre queda a la espera que el otro termine.
+    7. El actor es el ejemplo perfecto de cómo pasar un dato de un contexto a otro: usando para su acceso un await usado como elemento asíncrono.
+
+## Patrón Singleton y sus riesgos
+El patrón Singleton es un patrón de diseño que garantiza que una clase tenga una única instancia global accesible en todo el programa y proporciona un punto de acceso centralizado a esa instancia.
+
+Cuando un Singleton contiene propiedades mutables, puede generar problemas en aplicaciones concurrentes porque:
+- Acceso simultáneo no controlado: Si múltiples hilos acceden y modifican las propiedades al mismo tiempo, puede haber condiciones de carrera.
+- Estado inconsistente: Los datos pueden corromperse si no se sincroniza correctamente el acceso.
+- Falta de aislamiento: Todos los hilos tienen acceso a la misma instancia, y cualquier cambio afecta a todos.
+
+Solucion Usar actores como comentamos antes
+En Swift moderno, puedes reemplazar el Singleton tradicional con un actor para manejar la concurrencia automáticamente.
 
