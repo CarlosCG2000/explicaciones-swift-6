@@ -60,7 +60,7 @@ print("Fin")
 | **Serialización de bytes**      | Transformar datos complejos en un flujo de bytes                | Programación de sockets, persistencia binaria           |
 
 ### 1. Serialización de datos
-La `serialización de datos` se refiere al proceso de convertir `un objeto o estructura de datos` en un `formato que pueda ser almacenado o transmitido`(JSON, XML, Protobuf o formatos binarios personalizados) y luego reconstruido posteriormente (deserialización).
+La `serialización de datos` se refiere al proceso de convertir `un objeto o estructura de datos` en un `formato que pueda ser almacenado o transmitido` (JSON, XML, Protobuf o formatos binarios personalizados) y luego reconstruido posteriormente (deserialización).
 
 •	Usado para enviar datos a través de `redes, guardarlos en archivos, o transferirlos entre diferentes sistemas`.
 •	Los formatos más comunes incluyen `JSON, XML, Protobuf, o formatos binarios personalizados`.
@@ -163,7 +163,7 @@ concurrentQueue.async {
 ## 4_CONCURRENCIA --> A LA VEZ VARIAS TAREAS (UN HILO EN CADA TAREA EN APPLE SILICON DE FORMA PARALELA, SI NO QUEDAN HILOS SE ENCOLA HASTA QUE SE HABILITE UNO)
 
 ## 5_HILO --> Cada hilo es secuencial y no puede hacer más de una tarea (operación) a la vez en dicho HILO
-`Hilo principal (main thread)`: se encarga de la interfaz de usuario. Ejecuta las tareas de `forma síncrona y serializada`. 
+`Hilo principal (main thread)`: se encarga de la interfaz de usuario. Ejecuta las tareas de `forma síncrona y serializada`.
 
 ## 6_CONCURRENCIA ESTRICTA --> SOLUCIONA EL PROBLEMA DE Los `data race` se forman cuando existen datos mutables (variables) que tienen un acceso compartido entre distintos hilos. Y el probelma se da cuando múltiples tareas acceden y modifican datos compartidos simultáneamente
 SWIFT TE NOTIFICA DE `data race`: `no que lo vaya a hacer, que en dichas condiciones pueda darse`.
@@ -185,7 +185,7 @@ Los actores (estado mutable compartido)
     6. Así evita que cuando dos procesos intenten leer a la vez un dato, puedan conseguirlo porque uno de ellos siempre queda a la espera que el otro termine.
     7. El actor es el ejemplo perfecto de cómo pasar un dato de un contexto a otro: usando para su acceso un await usado como elemento asíncrono.
 
-## 8_Patrón Singleton y sus riesgos
+## 8_PATRÓN SINGLETON
 El patrón Singleton es un patrón de diseño que garantiza que una clase tenga una única instancia global accesible en todo el programa y proporciona un punto de acceso centralizado a esa instancia.
 
 Cuando un Singleton contiene propiedades mutables, puede generar problemas en aplicaciones concurrentes porque:
@@ -196,7 +196,7 @@ Cuando un Singleton contiene propiedades mutables, puede generar problemas en ap
 Solucion Usar actores como comentamos antes
 En Swift moderno, puedes reemplazar el Singleton tradicional con un actor para manejar la concurrencia automáticamente.
 
-## 9_Actores globales (`@Globalactor`) --> POR AQUI ME QUEDE ENE EL GENERAL
+## 9_ACTORES GLOBALES (`@Globalactor`) ANTE ACTORES REGULARES
 
 • A diferencia de los actores regulares que solo protegen sus propias propiedades, un actor global puede proteger cualquier código en cualquier parte de la aplicación, proporcionando un mecanismo de sincronización a nivel de sistema.
 
@@ -239,7 +239,7 @@ Características de los actores globales:
 	4.	Uso típico:
 	•	Ideal para manejar estados compartidos o recursos comunes en toda la aplicación, como el manejo de configuraciones, almacenamiento en caché o acceso a recursos externos.
 
-### 10_COMPARATIVA EJEMPLO PRÁCTICOS
+### 9.1_COMPARATIVA EJEMPLO PRÁCTICOS
 * Por qué un actor regular no funcionaría bien
 El problema surge cuando se crean `múltiples instancias` de un `actor regular`, ya que cada instancia tiene su propio aislamiento. Esto significa que el `estado` y las `operaciones` no se compartirían entre `instancias`, lo cual es crítico para recursos centralizados como las solicitudes API.
 
@@ -332,7 +332,7 @@ Por qué funciona:
 •	El `actor global` serializa todas las operaciones, asegurando que las solicitudes no entren en conflicto.
 
 =========================================================
-## 11_¿Podría implementarse el código anterior con struct?
+## 10_¿Podría implementarse el código anterior con struct?
 
 No de forma segura si deseas manejar concurrencia.
 
@@ -379,7 +379,7 @@ Conclusión
 •	Actor global: Es ideal para centralizar el acceso y garantizar coherencia en recursos compartidos como las solicitudes API.
 •	Struct: Aunque podrían usarse, requerirían implementar manualmente mecanismos de sincronización y protección contra concurrencia, lo que los hace más propensos a errores.
 
-## ¿Cuándo usar actores regulares, actores globales o structs en casos prácticos?
+## 11_¿Cuándo usar actores regulares, actores globales o structs en casos prácticos?
 
 | **Caso**                          | **Actor Regular**         | **Actor Global**         | **Struct**            |
 |------------------------------------|---------------------------|--------------------------|------------------------|
@@ -494,7 +494,7 @@ let employee = Employee(id: 1, name: "John Doe", position: "Developer")
 print(employee.name) // Output: John Doe
 ```
 
-### ¿Y las clases?
+### 12_¿Y las clases?
 
 | **Característica**            | **Actor**                              | **Clase**                             | **Struct**                            |
 |--------------------------------|----------------------------------------|---------------------------------------|---------------------------------------|
