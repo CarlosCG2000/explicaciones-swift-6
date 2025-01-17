@@ -622,3 +622,157 @@ struct ContentView: View {
 ```
 
 # AÑADIR FUNCIONES A LA APP
+
+### 1. Buscador de cartas
+•	Descripción: Agregar un campo de búsqueda que permita filtrar las cartas por nombre o por alguna característica (raza, afiliación, etc.).
+•	Cómo implementarlo:
+1.	Añade un estado en la vista para almacenar el texto de búsqueda:
+
+```js
+    @State private var searchText = ""
+```
+
+Filtra las cartas en función del texto ingresado:
+```js
+var filteredCards: [StarCard] {
+    if searchText.isEmpty {
+        return vm.cards
+    } else {
+        return vm.cards.filter { $0.nombre.lowercased().contains(searchText.lowercased()) }
+    }
+}
+```
+Agrega un SearchBar en la vista:
+```js
+NavigationStack {
+    List {
+        ForEach(filteredCards, id: \.id) { card in
+            StarCardView(card: card)
+        }
+    }
+    .navigationTitle("Star Wars")
+    .searchable(text: $searchText, prompt: "Buscar por nombre...")
+}
+```
+
+### 2. Favoritos
+• Descripción: Permitir que los usuarios marquen cartas como favoritas y puedan verlas en una sección separada.
+• Cómo implementarlo:
+1.	Añade un estado booleano en el modelo StarCard para indicar si es favorita:
+```js
+struct StarCard: Identifiable, Hashable {
+    let id: Int
+    ...
+    var isFavorite: Bool = false
+}
+```
+
+2.	Crea una función en el ViewModel para alternar el estado de favorito:
+```js
+func toggleFavorite(for card: StarCard) {
+    if let index = cards.firstIndex(where: { $0.id == card.id }) {
+        cards[index].isFavorite.toggle()
+    }
+}
+```
+
+3.	Agrega un botón en la vista para marcar como favorito:
+```js
+Button(action: {
+    vm.toggleFavorite(for: card)
+}) {
+    Image(systemName: card.isFavorite ? "star.fill" : "star")
+        .foregroundColor(card.isFavorite ? .yellow : .gray)
+}
+```
+
+### 3. Filtrado por afiliación, raza o habilidades
+•	Descripción: Implementa un filtro dinámico para seleccionar cartas basadas en su afiliación, raza o habilidades.
+•	Cómo implementarlo:
+1.	Añade un menú desplegable (Picker) con opciones de filtro:
+```js
+@State private var selectedFilter: String = "Todas"
+let filters = ["Todas", "Alianza Rebelde", "Nueva República", "Uso de la Fuerza", "Humano"]
+```
+
+2.	Filtra las cartas según la selección:
+```js
+var filteredCards: [StarCard] {
+    if selectedFilter == "Todas" {
+        return vm.cards
+    } else {
+        return vm.cards.filter { $0.afiliacion.contains(selectedFilter) || $0.habilidades.contains(selectedFilter) || $0.raza == selectedFilter }
+    }
+}
+```
+
+3.	Agrega un Picker en la vista:
+```js
+Picker("Filtrar", selection: $selectedFilter) {
+    ForEach(filters, id: \.self) { filter in
+        Text(filter)
+    }
+}
+.pickerStyle(.segmented)
+```
+
+### 4. Mini Juego: Trivia Simpson
+Funcionalidad
+	•	Un juego de preguntas de trivia sobre personajes y eventos de “Star Wars”.
+
+Implementación
+	•	View: Una vista TriviaGameView que muestra preguntas con opciones múltiples.
+	•	ViewModel: Crear un TriviaGameVM para manejar la lógica del juego.
+	•	Actor:
+	•	Usar un actor GameStateManager para manejar la puntuación y las preguntas de forma concurrente.
+
+```js
+actor GameStateManager {
+    private(set) var score: Int = 0
+    private var questions: [TriviaQuestion]
+
+    init(questions: [TriviaQuestion]) {
+        self.questions = questions
+    }
+
+    func getNextQuestion() -> TriviaQuestion? {
+        return questions.isEmpty ? nil : questions.removeFirst()
+    }
+
+    func updateScore(correct: Bool) {
+        score += correct ? 1 : 0
+    }
+
+    func getScore() -> Int {
+        return score
+    }
+}
+```
+
+### 5. Comparador de Cartas (StarCard Comparator)
+Funcionalidad
+	•	Una vista para comparar dos cartas lado a lado, mostrando atributos como habilidades, armas, etc.
+
+Implementación
+	•	View: Una vista llamada ComparatorView para mostrar las cartas seleccionadas.
+	•	ViewModel: Crear un ComparatorVM que maneje las dos cartas seleccionadas.
+	•	Actor:
+	•	Usar un actor ComparisonManager para realizar comparaciones de atributos en segundo plano.
+
+```js
+actor ComparisonManager {
+    func compare(card1: StarCard, card2: StarCard) -> [String: String] {
+        return [
+            "Habilidades": card1.habilidades.joined(separator: ", ") == card2.habilidades.joined(separator: ", ") ? "Empate" : "Diferente",
+            "Armas": card1.armas.joined(separator: ", ") == card2.armas.joined(separator: ", ") ? "Empate" : "Diferente"
+        ]
+    }
+}
+```
+
+MI IDEA DE LOS SIMPSON:
+`https://sampleapis.com/api-list/simpsons` - API DE PERSONAJES (sin imagen) --> Listado completo, añadir a favoritos, añadir campo 'favoritos' y guardar dichos en una BD de SwiftData.
+`https://thesimpsonsquoteapi.glitch.me/` - API DE CITAS --> Listado de 15 citas ramdon, poder filtrar por nombre y mostrar 15 citas y al dar al boton volver a generar otras 15 citas, poder guardar citas en un json (con una nueva pagina donde poder visualizar esas citas preferidas y borrarlas en BD SwidData)
+JUEGO CITAS -- CREAR JSON CON PREGUNTAS DE CITAS Y TENER QUE ADIVINAR QUIEN ES EN CASO DE ACERTAR QUISAS 10 PUNTOS.
+`https://github.com/colinxfleming/simpsons_data/blob/main/simpsons_data.json` - JSON DE LOS CAPITULOS añadir campo 'ver' y tener la opcion de marcar como visto o no visto la página,poder ver en detalles en una nueva pagina los datos del capitulo.
+
