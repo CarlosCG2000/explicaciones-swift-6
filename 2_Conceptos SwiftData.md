@@ -1,4 +1,7 @@
 
-## 1_ `SwiftData` vs `Core Data`
+## 1_`SwiftData` vs `Core Data`
 
-## 2_ SwiftData --> Módelo compartido (contenedor, contexto)
+## 2_SwiftData --> Módelo compartido (contenedor, contexto)
+
+## ANÁLISIS DE LA APP SwiftData
+
