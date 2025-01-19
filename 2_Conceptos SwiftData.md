@@ -490,5 +490,188 @@ if tareas.isEmpty {
 ```
 
 ## ¿Se puede combinar este diseño de `SwiftData` con el diseño de `Clean Arquitectura` junto `MVVM`? En este proyecto por ejemplo
-## ¿Si tengo dos modelos uno para personajes y otro para citas para llamar con `Query` y acceder al BD como se a que entidad de datos estoy llamando?
+Sí, puedes combinar `SwiftData` con un diseño basado en `Clean Architecture` y `MVVM` para estructurar tu proyecto de manera modular, escalable y fácil de mantener. La idea principal sería separar:
+- las `capas de la aplicación` (`Presentación`, `Dominio` y `Datos`).
+- la `capa de persistencia` mientras utilizas `SwiftData`.
 
+Cómo integrar Clean Architecture y MVVM con SwiftData
+
+1. Capas principales
+    1. `Capa de Datos` (`Data Layer`): contiene la `lógica de persistencia` y operaciones `CRUD` con `SwiftData`.
+	•	Define las entidades de datos (`@Model`) y los `servicios` que interactúan con el `ModelContainer`.
+
+	2.	`Capa de Dominio` (`Domain Layer`): contiene `casos de uso` (Use Cases) que encapsulan la `lógica de negocio`.
+	• `No` tiene `dependencias` directas de `la capa de datos` ni de `SwiftData`.
+	• Define `entidades de dominio` (pueden ser diferentes de las `entidades de datos` si es necesario).
+
+	3. `Capa de Presentación` (Presentation Layer): implementa el `patrón MVVM`, donde el `ViewModel` interactúa con la `capa de dominio` y expone `datos procesado`s a las `vistas`.
+
+2. Estructura de ejemplo para combinar `SwiftData` con `Clean Architecture`
+
+    1. `Capa de Datos`: Persistencia
+    Define las `entidades de datos` y la `lógica` para acceder al `modelo` con `SwiftData`.
+
+```js
+// Entidad de Datos
+import SwiftData
+
+@Model
+final class Personaje {
+    var id: UUID
+    var nombre: String
+    var afiliacion: String
+
+    init(id: UUID = UUID(), nombre: String, afiliacion: String) {
+        self.id = id
+        self.nombre = nombre
+        self.afiliacion = afiliacion
+    }
+}
+```
+```js
+// Servicio de Persistencia
+import SwiftData
+
+final class DataRepository {
+    private let modelContext: ModelContext
+
+    init(context: ModelContext) {
+        self.modelContext = context
+    }
+
+    func fetchPersonajes() -> [Personaje] {
+        // Consulta directa con SwiftData
+        return modelContext.fetch(FetchDescriptor<Personaje>())
+    }
+
+    func addPersonaje(nombre: String, afiliacion: String) {
+        let nuevoPersonaje = Personaje(nombre: nombre, afiliacion: afiliacion)
+        modelContext.insert(nuevoPersonaje)
+        saveContext()
+    }
+
+    private func saveContext() {
+        do {
+            try modelContext.save()
+        } catch {
+            print("Error al guardar el contexto: \(error)")
+        }
+    }
+}
+```
+
+   2. `Capa de Dominio`: Casos de Uso
+   Define `la lógica de negocio` desacoplada de `la capa de datos`.
+
+```js
+final class ObtenerPersonajesUseCase {
+    private let repository: DataRepository
+
+    init(repository: DataRepository) {
+        self.repository = repository
+    }
+
+    func execute() -> [Personaje] {
+        return repository.fetchPersonajes()
+    }
+}
+
+final class AgregarPersonajeUseCase {
+    private let repository: DataRepository
+
+    init(repository: DataRepository) {
+        self.repository = repository
+    }
+
+    func execute(nombre: String, afiliacion: String) {
+        repository.addPersonaje(nombre: nombre, afiliacion: afiliacion)
+    }
+}
+```
+
+   2. `Capa de Presentación`: MVVM
+   El `ViewModel` interactúa con los `casos de uso` para exponer` datos procesados` a la `vista`.
+
+
+[ Si necesitas soporte para versiones anteriores de Swift o iOS (antes de Swift 5.9 o iOS 17), tendrás que seguir usando `@Published` para que las propiedades sean observables. Además, `@Published` es útil fuera del ecosistema de `SwiftUI`, como en contextos donde las anotaciones como `@Observable` no están disponibles. ]
+
+```js
+import SwiftUI
+
+@Observable
+final class PersonajesViewModel {
+    private let obtenerPersonajesUseCase: ObtenerPersonajesUseCase
+    private let agregarPersonajeUseCase: AgregarPersonajeUseCase
+
+    var personajes: [Personaje] = [] // No hace falta @Published.
+
+    init(obtenerPersonajesUseCase: ObtenerPersonajesUseCase, agregarPersonajeUseCase: AgregarPersonajeUseCase) {
+        self.obtenerPersonajesUseCase = obtenerPersonajesUseCase
+        self.agregarPersonajeUseCase = agregarPersonajeUseCase
+        loadPersonajes()
+    }
+
+    func loadPersonajes() {
+        personajes = obtenerPersonajesUseCase.execute()
+    }
+
+    func addPersonaje(nombre: String, afiliacion: String) {
+        agregarPersonajeUseCase.execute(nombre: nombre, afiliacion: afiliacion)
+        loadPersonajes() // Recargar los datos después de agregar
+    }
+}
+```
+
+Las `vistas` utilizan el `ViewModel` para mostrar `datos` y reaccionar a los `cambios`.
+```js
+struct PersonajesView: View {
+    @StateObject private var viewModel = PersonajesViewModel(
+        obtenerPersonajesUseCase: ObtenerPersonajesUseCase(repository: DataRepository(context: ModelContext.current)),
+        agregarPersonajeUseCase: AgregarPersonajeUseCase(repository: DataRepository(context: ModelContext.current))
+    )
+
+    @State private var nombre: String = ""
+    @State private var afiliacion: String = ""
+
+    var body: some View {
+        NavigationStack {
+            List(viewModel.personajes) { personaje in
+                VStack(alignment: .leading) {
+                    Text(personaje.nombre).font(.headline)
+                    Text(personaje.afiliacion).font(.subheadline).foregroundColor(.gray)
+                }
+            }
+            .navigationTitle("Personajes")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Agregar") {
+                        viewModel.addPersonaje(nombre: nombre, afiliacion: afiliacion)
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+## ¿Si tengo dos modelos uno para personajes y otro para citas para llamar con `Query` y acceder al BD como se a que entidad de datos estoy llamando?
+Cuando usas `@Query` en una `vista`, esta se asocia a una `entidad específica` definida en tu modelo de datos (`@Model`). Por ejemplo:
+```js
+@Query private var personajes: [Personaje]
+@Query private var citas: [Cita]
+```
+
+En este caso:
+1. `@Query` `automáticamente` sabe que debe observar los datos de la entidad `Personaje` o `Cita` (según lo declarado).
+2. Si tienes `múltiples` entidades en tu `ModelContainer`, `SwiftData` diferencia `automáticamente` las consultas en función del `tipo` especificado ([Personaje] o [Cita]).
+3. `Filtrado o clasificación`: Puedes personalizar las consultas usando `predicados` o `descriptores` de orden.
+
+```js
+@Query(filter: #Predicate { $0.afiliacion == "Jedi" }) private var personajesJedi: [Personaje]
+```
+
+Ventajas de combinar `Clean Architecture` y `SwiftData`
+1. `Modularidad`: Cada capa tiene responsabilidades claramente definidas.
+2. `Reutilización`: Los casos de uso pueden ser reutilizados por diferentes vistas o componentes.
+3. `Testabilidad`: Al desacoplar la lógica de negocio y la persistencia, puedes probar las capas de dominio y presentación de forma independiente.
+4. `Escalabilidad`: La estructura facilita añadir nuevas entidades, funciones y vistas sin impactar negativamente en el código existente.
