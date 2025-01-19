@@ -489,6 +489,6 @@ if tareas.isEmpty {
 }
 ```
 
-## ¿Se puede combinar este diseño de `SwiftData` con el diseño de `Clean Arquitectura` junto `MVVM`? EAs este proyecto por ejemplo
-## ¿Si tengo dos modelos uno para personajes y otro para citas para llamar con `Query`y acceder al BD como se ha que entidad de datos estoy llamando?
+## ¿Se puede combinar este diseño de `SwiftData` con el diseño de `Clean Arquitectura` junto `MVVM`? En este proyecto por ejemplo
+## ¿Si tengo dos modelos uno para personajes y otro para citas para llamar con `Query` y acceder al BD como se a que entidad de datos estoy llamando?
 
