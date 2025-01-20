@@ -39,9 +39,9 @@ Forma parte del modelo de `concurrencia` introducido en `Swift 5.5` y que se usa
 - `Chart` y `SectorMark` (gráfica de circulo) y leyendas.
 
 # APP 3 (Sitios Fav Mapas)
-`Mapa`
-`Dialogo`
-`Formulario`
-`Botón superpuesto`
-`Sheet`
-`Listado horizontal`
+`Mapa`: mapa de Apple.
+`Dialogo`: dialogo personalizado con el que se puede cerrar desde cualquier para de la pantalla si se desea y que contiene un formulario.
+`Formulario`: es un formulario el cual tiene validación de datos.
+`Botón superpuesto`: boton que se encuentra encima de la pantalla y sirve para abir ventana superpuesta.
+`Sheet`: ventana superpuesta que se abre hasta el punto que se desee de la pantalla.
+`Listado horizontal`: listado en forma horizontal con scroll horizontal.
