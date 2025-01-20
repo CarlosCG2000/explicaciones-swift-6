@@ -769,12 +769,3 @@ actor ComparisonManager {
     }
 }
 ```
-
-MI IDEA DE LOS SIMPSON:
-`https://sampleapis.com/api-list/simpsons` - API DE PERSONAJES (sin imagen) --> Listado completo, añadir a favoritos, añadir campo 'favoritos' y guardar dichos en una BD de SwiftData.
-`https://thesimpsonsquoteapi.glitch.me/` - API DE CITAS --> Listado de 15 citas ramdon, poder filtrar por nombre y mostrar 15 citas y al dar al boton volver a generar otras 15 citas, poder guardar citas en un json (con una nueva pagina donde poder visualizar esas citas preferidas y borrarlas en BD SwidData)
-JUEGO CITAS -- CREAR JSON CON PREGUNTAS DE CITAS Y TENER QUE ADIVINAR QUIEN ES EN CASO DE ACERTAR QUISAS 10 PUNTOS.
-`https://github.com/colinxfleming/simpsons_data/blob/main/simpsons_data.json` - JSON DE LOS CAPITULOS añadir campo 'ver' y tener la opcion de marcar como visto o no visto la página,poder ver en detalles en una nueva pagina los datos del capitulo.
-
-Añadir cuando pongas citas a favoritos tener la opción de `crear nuevas citas` (dialogo personalizado con formulario visto en App-3-en-1). Lo suyo seria que tengas una nueva vista que con los favoritos que se redirige desde la de citas en general y alli tenner la opcion de mostrar las citas del json den la BD que estan en favoritos.
-Asi lo hago diferente al de personajes que puedo edicar los json añadiendo el campo favorito y en los usuarios que se modifique a favorito sean los que use dicho a favoritos.
