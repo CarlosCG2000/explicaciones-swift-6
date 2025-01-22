@@ -92,7 +92,7 @@ struct ContentView: View {
 
 ### 1. ModelData.swift (Model):
 
-- 1. La anotación `@Model` en la `clase Tareas` indica que esta clase es una entidad del modelo de datos en SwiftData. (esta anotación hace que `SwiftData` gestione automáticamente la persistencia de la entidad en la base de datos.)
+- 1. La anotación `@Model` en la `clase Tareas` indica que esta clase es una entidad del modelo de datos en `SwiftData`. (esta anotación hace que `SwiftData` gestione automáticamente la persistencia de la entidad en la base de datos.)
 
 Ventajas:
 •	No necesitas configurar manualmente un modelo en un archivo `.xcdatamodeld`.

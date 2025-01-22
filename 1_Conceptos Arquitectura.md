@@ -192,7 +192,7 @@ Cuándo usar clases o estructuras:
 	•	Son ideales para `modelos de datos puros` y se benefician de su bajo overhead.
 
 
-DIFERENCIA ENTRE `UIKIT` CON `MVC` Y `SWIFT UI` CON `MVVM`.
+# DIFERENCIA ENTRE `UIKIT` CON `MVC` Y `SWIFT UI` CON `MVVM`.
 Comparar UIKit con MVC y SwiftUI con MVVM es esencial para entender cómo ambas arquitecturas y frameworks abordan la construcción de interfaces de usuario y la gestión de lógica en aplicaciones iOS. A continuación, te detallo las principales diferencias y cuál puede ser más conveniente según tu caso.
 
 UIKit con MVC
