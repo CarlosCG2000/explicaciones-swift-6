@@ -1,3 +1,5 @@
+## INDICE
+...
 
 ## 1_`SwiftData` vs `Core Data`
 
@@ -5,7 +7,7 @@
 `Core Data` es un `framework maduro` y `robusto de Apple` diseñado para administrar el modelo de datos en aplicaciones iOS, macOS, watchOS y tvOS. Ofrece funcionalidades avanzadas como `persistencia de datos`, `gestión del ciclo de vida de objetos`, `relaciones entre entidades` y `consultas avanzadas`.
 
 ### ¿Qué es SwiftData?
-`SwiftData` es una `nueva API` introducida por Apple en WWDC `2023` como una alternativa más m`oderna y simplificada a Core Data`. Está diseñada para integrarse mejor con `Swift y SwiftUI`, aprovechando las características del lenguaje Swift (como `@Observable` y el `protocolo Codable`) para facilitar el trabajo con `datos persistentes`.
+`SwiftData` es una `nueva API` introducida por Apple en WWDC `2023` como una alternativa más `moderna y simplificada a Core Data`. Está diseñada para integrarse mejor con `Swift y SwiftUI`, aprovechando las características del lenguaje Swift (como `@Observable` y el `protocolo Codable`) para facilitar el trabajo con `datos persistentes`.
 
 # SwiftData vs Core Data
 
