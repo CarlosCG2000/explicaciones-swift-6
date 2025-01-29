@@ -1,5 +1,26 @@
 ## INDICE
-...
+¿Qué es Core Data?
+¿Qué es SwiftData?
+1_SwiftData vs Core Data
+
+2_SwiftData --> Módelo compartido (contenedor, contexto)
+    2.1_Contenedor en SwiftData
+    2.2_Contexto en SwiftData
+
+Ventajas del Modelo Compartido
+Comparativa entre Modelo Compartido y Core Data
+
+ANÁLISIS DE LA `APP` en `SwiftData`
+    1. `ModelData.swift` (Model)
+    Añadir funciones en el `ModelData.swift`
+    2. `TaskSwiftDataApp.swift` (ModelContainer)
+    3. `SampleData.swift` (ModelContainer en Preview)
+        Añadir funciones en el `TaskSwiftDataApp.swift` y `SampleData.swift`
+    4. `ContentView.swift` (Vista)
+        Posibles Mejoras
+
+¿Se puede combinar este diseño de `SwiftData` con el diseño de `Clean Arquitectura` junto `MVVM`? En este proyecto por ejemplo
+¿Si tengo `dos modelos` uno para personajes y otro para citas para llamar con `Query` y acceder al `BD` como se a que `entidad de datos` estoy llamando?
 
 ## 1_`SwiftData` vs `Core Data`
 
@@ -10,18 +31,17 @@
 `SwiftData` es una `nueva API` introducida por Apple en WWDC `2023` como una alternativa más `moderna y simplificada a Core Data`. Está diseñada para integrarse mejor con `Swift y SwiftUI`, aprovechando las características del lenguaje Swift (como `@Observable` y el `protocolo Codable`) para facilitar el trabajo con `datos persistentes`.
 
 # SwiftData vs Core Data
-
 | Aspecto                       | SwiftData                                                                                   | Core Data                                                                                          |
 |-------------------------------|---------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
-| **Lenguaje y sintaxis**       | Diseñado para Swift puro con una sintaxis moderna y declarativa.                             | Usa una sintaxis más antigua basada en Objective-C, aunque funciona en Swift.                     |
-| **Modelo de datos**           | Define las entidades como estructuras o clases directamente en código con anotaciones como `@Model`. | Requiere un archivo de modelo (`.xcdatamodeld`) y configuraciones manuales en Xcode.             |
+| **Lenguaje y sintaxis**  | Diseñado para Swift puro con una sintaxis `moderna` y `declarativa`.|  Usa una sintaxis más `antigua` basada en `Objective-C`, aunque funciona en Swift.    |
+| **Modelo de datos**      | Define las entidades como estructuras o clases directamente en código con anotaciones como `@Model`. | Requiere un archivo de modelo (`.xcdatamodeld`) y configuraciones manuales en Xcode.   |
 | **Compatibilidad con SwiftUI**| Integración nativa con SwiftUI y anotaciones como `@Query` para observar datos en tiempo real.| Necesita integraciones manuales con `@FetchRequest` y `NSFetchedResultsController`.               |
-| **Complejidad**               | Más simple de usar y aprender, con configuraciones automáticas.                              | Requiere más configuración inicial y gestión manual del contexto.                                 |
+| **Complejidad**               | Más simple de usar y aprender, con `configuraciones automáticas`.                              | Requiere más configuración inicial y gestión manual del contexto.                                 |
 | **Persistencia**              | Usa un contenedor y contexto simplificados bajo el capó.                                     | Gestiona explícitamente el contenedor (`NSPersistentContainer`) y los contextos (`NSManagedObjectContext`). |
-| **Relaciones**                | Implementa relaciones de forma declarativa usando propiedades.                              | Requiere configurarlas explícitamente en el modelo gráfico o programático.                        |
-| **Concurrencia**              | Diseñado para manejar concurrencia automáticamente.                                         | Requiere gestionar concurrencia manualmente (contextos privados).                                 |
+| **Relaciones**                | Implementa relaciones de forma `declarativa` usando propiedades.                              | Requiere configurarlas `explícitamente` en el modelo gráfico o programático.                        |
+| **Concurrencia**              | Diseñado para manejar `concurrencia automáticamente`.                                         | Requiere gestionar `concurrencia manualmente` (contextos privados).                                 |
 | **Compatibilidad**            | Disponible desde iOS 17, macOS 14, tvOS 17 y watchOS 10.                                    | Compatible con versiones anteriores de iOS, macOS, tvOS y watchOS.                                |
-| **Flexibilidad avanzada**     | No tan avanzado como Core Data para proyectos muy complejos o legacy.                       | Mayor flexibilidad para proyectos empresariales de gran escala.                                   |
+| **Flexibilidad avanzada**     | No tan avanzado como `Core Data` para proyectos muy complejos o legacy.                       | Mayor flexibilidad para proyectos empresariales de gran escala.                                   |
 
 ---
 
@@ -78,7 +98,7 @@ struct ContentView: View {
 
 ### Ventajas del Modelo Compartido
 • `Simplificación de Configuración`: No necesitas preocuparte por inicializar o propagar manualmente el contexto.
-• `Integración Directa con SwiftUI`: @Query hace que observar cambios en los datos sea trivial.
+• `Integración Directa con SwiftUI`: `@Query` hace que observar cambios en los datos sea trivial.
 • `Concurrencia Automática`: SwiftData se encarga de gestionar múltiples hilos de forma segura.
 
 ### Comparativa entre Modelo Compartido y Core Data
@@ -88,11 +108,11 @@ struct ContentView: View {
 | **Inicialización**    | Usa un `ModelContainer` con modelos declarados directamente en código. | Requiere un `NSPersistentContainer` configurado manualmente. |
 | **Uso en vistas**      | Anotaciones declarativas como `@Query`.      | Uso de `@FetchRequest` o `NSFetchedResultsController`. |
 | **Propagación**        | Usa `.modelContainer()` para compartir el contenedor en el entorno. | Usa `.environment(\.managedObjectContext)` manualmente. |
-| **Observación**        | Datos reactivos automáticos con `@Observable` y `@Query`. | Observación manual mediante controladores de resultados. |
+| **Observación**        | Datos reactivos automáticos con `@Observable` y `@Query`. | Observación manual mediante `controladores` de resultados. |
 
 ## ANÁLISIS DE LA `APP` en `SwiftData`
 
-### 1. ModelData.swift (Model):
+### 1. `ModelData.swift` (Model):
 
 - 1. La anotación `@Model` en la `clase Tareas` indica que esta clase es una entidad del modelo de datos en `SwiftData`. (esta anotación hace que `SwiftData` gestione automáticamente la persistencia de la entidad en la base de datos.)
 
@@ -101,7 +121,7 @@ Ventajas:
 •	El modelo es `declarativo` y está integrado con Swift de `forma nativa`.
 
 - 2. `Propiedades` del `Modelo`.
-• `@Attribute(.unique)` en `id`: especifica que el atributo id debe ser único en la base de datos. Esto garantiza que cada tarea tenga un identificador único (UUID) para evitar duplicados. Es una excelente práctica para mantener la integridad de los datos.
+• `@Attribute(.unique)` en `id`: especifica que el atributo id debe ser único en la base de datos. Esto garantiza que cada tarea tenga `un identificador único (UUID)` para evitar duplicados. Es una excelente práctica para mantener la integridad de los datos.
 • `nombre` y `descripcion`: son atributos `simples` para almacenar `cadenas`.
 • `fecha`: un atributo de tipo `Date` que puede ser útil para `ordenar` o `filtrar` tareas según su programación.
 • `estado`: es un atributo que utiliza un tipo `enumerado personalizado (EstadoTarea)`. Esto permite restringir los valores posibles a opciones predefinidas como `“Pendiente”`, `“En Progreso”`, y `“Completada”`.
@@ -136,7 +156,7 @@ extension Tareas {
 }
 ```
 
-### 2. TaskSwiftDataApp.swift (ModelContainer)
+### 2. `TaskSwiftDataApp.swift` (ModelContainer)
 
 1. Modelo compartido (`sharedModelContainer`)
 
@@ -170,18 +190,18 @@ do {
 2. Vinculación del contenedor con la escena principal:
 • `modelContainer` vincula el `contenedor al entorno`, permitiendo que cualquier vista que lo necesite pueda acceder al `contexto principal` (e.g., insertar, actualizar o consultar datos).
 
-### 3. SampleData.swift (ModelContainer en Preview)
+### 3. `SampleData.swift` (ModelContainer en Preview)
 Este archivo es una implementación práctica para `pruebas` y `vistas previas`. La separación del código de muestra es ideal, ya que te permite probar y previsualizar la aplicación sin interferir con la lógica principal de producción.
 
 1. Creación de un `contenedor de modelo` en memoria:
 • `isStoredInMemoryOnly`: `true` asegura que los datos `no se persistan`, lo que es ideal para `pruebas` o `vistas previas`.
-• Es una excelente práctica mantener el entorno de prueba aislado del entorno de producción.
+• Es una excelente práctica mantener el `entorno de prueba aislado` del entorno de producción.
 ```js
 let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
 ```
 
 2. `Inserción` de datos de muestra e inserción directa en el `mainContext`:
-Esto asegura que los datos de muestra estén disponibles para su uso inmediato en las vistas.
+Esto asegura que `los datos de muestra` estén disponibles para su uso inmediato en las vistas.
 ```js
 let tarea1 = Tareas(id: UUID(),
                     nombre: "Realizar tareas de forma autodidacta",
@@ -204,10 +224,10 @@ extension PreviewTrait where T == Preview.ViewTraits {
 #### Añadir funciones en el `TaskSwiftDataApp.swift` y `SampleData.swift`
 
 1. Uso de `actores` en `concurrencia`:
-• Podrías considerar usar actores para proteger el `acceso al contenedor` y al contexto en aplicaciones con múltiples hilos. Por ejemplo:
+• Podrías considerar usar actores para proteger el `acceso al contenedor` y al `contexto` en aplicaciones con `múltiples hilos`. Por ejemplo:
 
-+ ¿Como implementaria el punto de añadir funciones '1. Uso de `actores` en `concurrencia`.' en los ModelContainer?
-Con este enfoque, todas las operaciones sobre el ModelContainer y el mainContext están centralizadas y protegidas por el actor DataManager, garantizando la seguridad en concurrencia.
++ ¿Como implementaria el punto de añadir funciones `1. Uso de actores en concurrencia.` en los `ModelContainer`?
+Con este enfoque, todas las operaciones sobre el `ModelContainer` y el `mainContext` están centralizadas y protegidas por el `actor DataManager`, garantizando la seguridad en concurrencia.
 
 ```js
 import Foundation
@@ -253,7 +273,7 @@ import SwiftUI
 @Observable
 final class TareasViewModel {
     private let dataManager: DataManager
-    @Published var tareas: [Tareas] = []
+    var tareas: [Tareas] = []
 
     init(dataManager: DataManager) {
         self.dataManager = dataManager
@@ -285,7 +305,7 @@ final class TareasViewModel {
 2. Separación de `responsabilidades`:
 • Actualmente, la `lógica de inicialización` y la `definición del modelo` están en la misma clase. Podrías separar las responsabilidades para que el contenedor de modelo sea manejado por un servicio o gestor dedicado.
 
-+ Creación de un Servicio de Modelo
++ Creación de un `Servicio` de Modelo
 ```js
 import SwiftData
 import Foundation
@@ -308,7 +328,7 @@ final class ModelContainerService {
 }
 ```
 
-+ Ajuste de la Aplicación Principal
++ Ajuste de la `Aplicación Principal`
 En lugar de manejar el `ModelContainer` directamente en `TaskSwiftDataApp`, delegamos esa responsabilidad al servicio.
 ```js
 import SwiftUI
@@ -346,12 +366,12 @@ actor DataManager {
 ```
 
 - Beneficios de esta separación
-• `Reutilización`: Puedes usar el mismo servicio en diferentes partes de la aplicación (e.g., vistas, ViewModels, pruebas).
-• `Mantenimiento`: Si necesitas cambiar la configuración del contenedor (e.g., agregar modelos adicionales), solo necesitas actualizar el servicio.
-• `Legibilidad`: La responsabilidad de configurar el contenedor se separa de la lógica de la aplicación principal.
+• `Reutilización`: puedes usar el mismo servicio en diferentes partes de la aplicación (e.g., vistas, ViewModels, pruebas).
+• `Mantenimiento`: si necesitas cambiar la configuración del contenedor (e.g., agregar modelos adicionales), solo necesitas actualizar el servicio.
+• `Legibilidad`: la responsabilidad de configurar el contenedor se separa de la lógica de la aplicación principal.
 
 3. Datos más `dinámicos` en `SampleData`:
-• Podrías incluir datos generados dinámicamente usando bucles o estructuras de control:
+• Podrías incluir datos generados `dinámicamente` usando bucles o estructuras de control:
 
 ```js
 for i in 1...5 {
@@ -372,9 +392,9 @@ for i in 1...5 {
 5. `Migraciones`:
 • Aunque `SwiftData` maneja automáticamente las `migraciones básicas`, si planeas expandir el esquema, asegúrate de probar cómo maneja los cambios de estructura y datos existentes.
 
-### 4. ContentView.swift (Vista)
+### 4. `ContentView.swift` (Vista)
 1. Uso de `@Query`
-El uso de la propiedad `@Query` para recuperar tareas es una excelente elección, ya que aprovecha la integración de `SwiftData` con `SwiftUI`. Esto permite que las vistas reaccionen automáticamente a los cambios en los datos, lo cual es ideal para un `flujo reactivo`. Sin embargo: si planeas realizar operaciones más complejas (como filtrado o clasificación avanzada), considera personalizar tu consulta:
+El uso de la propiedad `@Query` para recuperar tareas es una excelente elección, ya que aprovecha la integración de `SwiftData` con `SwiftUI`. Esto permite que las vistas `reaccionen automáticamente` a los cambios en los datos, lo cual es ideal para un `flujo reactivo`. Sin embargo: si planeas realizar operaciones más complejas (como filtrado o clasificación avanzada), considera personalizar tu consulta:
 
 ```js
 @Query(sort: \.fecha, order: .reverse) private var tareas: [Tareas]
@@ -506,7 +526,7 @@ Cómo integrar Clean Architecture y MVVM con SwiftData
 	• `No` tiene `dependencias` directas de `la capa de datos` ni de `SwiftData`.
 	• Define `entidades de dominio` (pueden ser diferentes de las `entidades de datos` si es necesario).
 
-	3. `Capa de Presentación` (Presentation Layer): implementa el `patrón MVVM`, donde el `ViewModel` interactúa con la `capa de dominio` y expone `datos procesado`s a las `vistas`.
+	3. `Capa de Presentación` (Presentation Layer): implementa el `patrón MVVM`, donde el `ViewModel` interactúa con la `capa de dominio` y expone `datos procesados` a las `vistas`.
 
 2. Estructura de ejemplo para combinar `SwiftData` con `Clean Architecture`
 
@@ -591,9 +611,8 @@ final class AgregarPersonajeUseCase {
 }
 ```
 
-   2. `Capa de Presentación`: MVVM
+   3. `Capa de Presentación`: MVVM
    El `ViewModel` interactúa con los `casos de uso` para exponer` datos procesados` a la `vista`.
-
 
 [ Si necesitas soporte para versiones anteriores de Swift o iOS (antes de Swift 5.9 o iOS 17), tendrás que seguir usando `@Published` para que las propiedades sean observables. Además, `@Published` es útil fuera del ecosistema de `SwiftUI`, como en contextos donde las anotaciones como `@Observable` no están disponibles. ]
 
@@ -656,7 +675,7 @@ struct PersonajesView: View {
 }
 ```
 
-## ¿Si tengo dos modelos uno para personajes y otro para citas para llamar con `Query` y acceder al BD como se a que entidad de datos estoy llamando?
+## ¿Si tengo `dos modelos` uno para personajes y otro para citas para llamar con `Query` y acceder al `BD` como se a que `entidad de datos` estoy llamando?
 Cuando usas `@Query` en una `vista`, esta se asocia a una `entidad específica` definida en tu modelo de datos (`@Model`). Por ejemplo:
 ```js
 @Query private var personajes: [Personaje]
